@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Personen – adresboek in Next.js
 
-## Getting Started
+Een webapp om personen bij te houden (naam, adres, telefoonnummer). Gebouwd met **Next.js (React)** en een **MySQL**-database.
 
-First, run the development server:
+## Functies
+- Overzicht van alle personen in een tabel
+- **Sorteren** op achternaam of woonplaats (oplopend/aflopend)
+- Persoon **toevoegen**, **wijzigen** en **verwijderen** (met bevestiging)
+- Tijd van toevoegen zichtbaar als je met de muis over de rij gaat
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Hoe het werkt
+De pagina's (React) praten met een eigen **REST API** in Next.js, en de API praat met MySQL.
+
+| Methode | Route | Wat het doet |
+|---|---|---|
+| GET | `/api/personen?sortField=Achternaam&order=asc` | Alle personen ophalen (gesorteerd) |
+| POST | `/api/personen` | Nieuwe persoon toevoegen |
+| GET | `/api/personen/[id]` | Eén persoon ophalen |
+| PUT | `/api/personen/[id]` | Persoon wijzigen |
+| DELETE | `/api/personen/[id]` | Persoon verwijderen |
+
+Alle queries gebruiken **prepared statements** (`?`-parameters) tegen SQL-injectie. De sorteerkolom wordt gecontroleerd, zodat alleen `Achternaam` of `Woonplaats` mogelijk is.
+
+## Projectstructuur
+```
+pages/index.js                 Overzicht + sorteren + verwijderen
+pages/add.js                   Formulier: persoon toevoegen
+pages/edit/[id].js             Formulier: persoon wijzigen
+pages/api/personen/index.js    API: lijst ophalen en toevoegen
+pages/api/personen/[id].js     API: ophalen, wijzigen, verwijderen
+lib/db.js                      MySQL-verbinding (connection pool)
+database.sql                   Database + tabel + voorbeelddata
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Starten
+1. Start MySQL (bijvoorbeeld via XAMPP)
+2. Voer `database.sql` uit in phpMyAdmin
+3. Kopieer `.env.example` naar `.env.local` en vul je databasegegevens in
+4. Voer uit:
+```
+npm install
+npm run dev
+```
+5. Open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Gebruikte technieken
+Next.js · React (useState, useEffect) · REST API · MySQL (mysql2) · JavaScript
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Wat ik heb geleerd
+- Een volledige CRUD-app bouwen met front-end en back-end in één project
+- Een eigen API maken met Next.js API routes
+- Veilig met een database werken via prepared statements en environment variables

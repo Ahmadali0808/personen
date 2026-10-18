@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  /* Using Pages Router, not App Router */
 };
 
 export default nextConfig;
